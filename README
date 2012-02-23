@@ -1,0 +1,3 @@
+XSL stylesheet for the indexing of MODS and EAC-CPF fields in Solr.
+
+To be placed in $CATALINA_HOME/webapps/fedoragsearch/WEB-INF/classes/config/index/gsearch_solr/
