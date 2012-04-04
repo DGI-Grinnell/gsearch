@@ -48,15 +48,23 @@
                     <xsl:value-of select="$docBoost"/>
                 </xsl:attribute>
                 <!-- The following allows only active demo FedoraObjects to be indexed. -->
+                <!-- I'm commenting this out because:
+                    1) We want to include Inactive objects (but only make them visible to admins)
+                    2) Objects that were Active but become Inactive need to be hidden, and this won't happen otherwise
+                 -->
+                <!--
                 <xsl:if
                     test="foxml:digitalObject/foxml:objectProperties/foxml:property[@NAME='info:fedora/fedora-system:def/model#state' and @VALUE='Active']">
+                    -->
                     <xsl:if
                         test="not(foxml:digitalObject/foxml:datastream[@ID='METHODMAP'] or foxml:digitalObject/foxml:datastream[@ID='DS-COMPOSITE-MODEL'])">
                         <xsl:if test="starts-with($PID,'')">
                             <xsl:apply-templates mode="activeDemoFedoraObject"/>
                         </xsl:if>
                     </xsl:if>
+                <!--
                 </xsl:if>
+                -->
             </doc>
         </add>
     </xsl:template>
