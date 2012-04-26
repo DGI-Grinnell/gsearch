@@ -407,7 +407,8 @@
     </xsl:template>
     <xsl:template name="mods">
         <xsl:variable name="MODS_STREAM"
-            select="islandora-exts:getXMLDatastreamASNodeList($PID, $REPOSITORYNAME, 'MODS', $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS)"/>
+            select="//foxml:datastream[@ID='MODS']/foxml:datastreamVersion[last()]" />
+            <!-- select="islandora-exts:getXMLDatastreamASNodeList($PID, $REPOSITORYNAME, 'MODS', $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS)" -->
 
         <!--***********************************************************MODS modified for maps**********************************************************************************-->
         <xsl:for-each select="$MODS_STREAM//mods:title">
