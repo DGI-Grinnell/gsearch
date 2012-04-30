@@ -889,9 +889,11 @@
         <xsl:apply-templates select="eac:chronItem[@localType='position']" />
     </xsl:template>
     <xsl:template match="eac:chronItem[@localType='classYear']">
-        <field name="eac.classYear">
-            <xsl:apply-templates select="eac:date" />
-        </field>
+        <xsl:if test="number(eac:date)">
+            <field name="eac.classYear">
+                <xsl:apply-templates select="eac:date" />
+            </field>    
+        </xsl:if>
     </xsl:template>
     <xsl:template match="eac:chronItem[@localType='position']">
         <xsl:variable name="description" select="eac:event" />
