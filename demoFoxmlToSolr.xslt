@@ -18,7 +18,8 @@
     xmlns:fedora-model="info:fedora/fedora-system:def/model#"
     xmlns:uvalibdesc="http://dl.lib.virginia.edu/bin/dtd/descmeta/descmeta.dtd"
     xmlns:pb="http://www.pbcore.org/PBCore/PBCoreNamespace.html"
-    xmlns:uvalibadmin="http://dl.lib.virginia.edu/bin/admin/admin.dtd/">
+    xmlns:uvalibadmin="http://dl.lib.virginia.edu/bin/admin/admin.dtd/"
+    xmlns:eac="urn:isbn:1-931666-33-4">
     <xsl:output method="xml" indent="yes" encoding="UTF-8"/>
 
     <!--
@@ -205,7 +206,7 @@
         <xsl:variable name="thisCModel">
             <xsl:value-of select="//fedora-model:hasModel/@rdf:resource"/>
         </xsl:variable>
-        <xsl:value-of select="$thisCModel"/>
+        <!-- <xsl:value-of select="$thisCModel"/> -->
 
         <xsl:for-each
             select="foxml:datastream[@ID='TEI']/foxml:datastreamVersion[last()]/foxml:xmlContent//*[name()='persName']">
@@ -307,7 +308,10 @@
             <xsl:call-template name="mods"/>
             <!--only call this if the mods stream exists-->
         </xsl:for-each>
-
+        
+        <!-- EAC-CPF for authorities -->
+        <xsl:apply-templates select="foxml:datastream[@ID='EAC-CPF']/foxml:datastreamVersion[last()]" mode="eac" />
+        
         <!-- Transformation of pbcore for islandvoices.ca     -->
         <xsl:for-each
             select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:pbcoreDescription[1]" >
@@ -808,5 +812,96 @@
 
 
     </xsl:template>
+
+    <xsl:template match="foxml:datastreamVersion" mode="eac">
+        <xsl:apply-templates select="foxml:xmlContent/eac:eac-cpf" />
+    </xsl:template>
+    
+    <xsl:template match="eac:eac-cpf">
+        <xsl:apply-templates select="eac:cpfDescription" />
+    </xsl:template>
+    <xsl:template match="eac:cpfDescription">
+        <xsl:apply-templates select="eac:identity" />
+        <xsl:apply-templates select="eac:description" />
+    </xsl:template>
+    <!-- identity section -->
+    <xsl:template match="eac:identity"> <!-- done -->
+        <xsl:apply-templates select="eac:entityType" /> <!-- done -->
+        <xsl:apply-templates select="eac:nameEntry" /> <!-- done -->
+        <xsl:apply-templates select="eac:entityId" /> <!-- done -->
+    </xsl:template>
+    <xsl:template match="eac:entityType">
+        <field name="eac.entityType">
+            <xsl:value-of select="normalize-space()" />
+        </field>
+    </xsl:template>
+    <xsl:template match="eac:nameEntry">
+        <xsl:apply-templates select="eac:part[@localType='firstName']" />
+        <xsl:apply-templates select="eac:part[@localType='middleName']" />
+        <xsl:apply-templates select="eac:part[@localType='lastName']" />
+    </xsl:template>
+    <xsl:template match="eac:part[@localType='firstName']">
+        <field name="eac.namePart_given">
+            <xsl:apply-templates />
+        </field>
+    </xsl:template>
+    <xsl:template match="eac:part[@localType='middleName']">
+        <field name="eac.namePart_middle">
+            <xsl:apply-templates />
+        </field>
+    </xsl:template>
+    <xsl:template match="eac:part[@localType='lastName']">
+        <field name="eac.namePart_family">
+            <xsl:apply-templates />
+        </field>
+    </xsl:template>
+    <xsl:template match="eac:entityId">
+        <field name="eac.entityId">
+            <xsl:apply-templates />
+        </field>
+    </xsl:template>
+    <!-- description section -->
+    <xsl:template match="eac:description">
+        <xsl:apply-templates select="eac:existDates" /> <!-- done -->
+        <xsl:apply-templates select="eac:biogHist" /> <!-- done -->
+    </xsl:template>
+    <xsl:template match="eac:existDates">
+        <field name="eac.existDates">
+            <xsl:apply-templates select="eac:dateRange" />
+        </field>
+    </xsl:template>
+    <xsl:template match="eac:dateRange">
+        <xsl:variable name="from" select="eac:fromDate" />
+        <xsl:variable name="to" select="eac:toDate" />
+        <xsl:value-of select="concat($from,'-',$to)"/>
+    </xsl:template>
+    <xsl:template match="eac:biogHist"> <!-- done -->
+        <xsl:apply-templates select="eac:chronList" />
+        <xsl:apply-templates select="eac:p" />
+    </xsl:template>
+    <xsl:template match="eac:chronList">
+        <xsl:apply-templates select="eac:chronItem[@localType='classYear']" />
+        <xsl:apply-templates select="eac:chronItem[@localType='position']" />
+    </xsl:template>
+    <xsl:template match="eac:chronItem[@localType='classYear']">
+        <field name="eac.classYear">
+            <xsl:apply-templates select="eac:date" />
+        </field>
+    </xsl:template>
+    <xsl:template match="eac:chronItem[@localType='position']">
+        <xsl:variable name="description" select="eac:event" />
+        <xsl:variable name="dates">
+            <xsl:apply-templates select="eac:dateRange" />
+        </xsl:variable>   
+        <field name="eac.position">
+            <xsl:value-of select="concat($description,', ',$dates)" />
+        </field>
+    </xsl:template>
+    <xsl:template match="eac:p">
+        <field name="eac.biography">
+            <xsl:apply-templates /> 
+        </field>
+    </xsl:template>
+
 </xsl:stylesheet>
 
