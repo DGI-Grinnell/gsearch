@@ -57,12 +57,12 @@
                 <xsl:if
                     test="foxml:digitalObject/foxml:objectProperties/foxml:property[@NAME='info:fedora/fedora-system:def/model#state' and @VALUE='Active']">
                     -->
-                    <xsl:if
-                        test="not(foxml:digitalObject/foxml:datastream[@ID='METHODMAP'] or foxml:digitalObject/foxml:datastream[@ID='DS-COMPOSITE-MODEL'])">
-                        <xsl:if test="starts-with($PID,'')">
-                            <xsl:apply-templates mode="activeDemoFedoraObject"/>
-                        </xsl:if>
+                <xsl:if
+                    test="not(foxml:digitalObject/foxml:datastream[@ID='METHODMAP'] or foxml:digitalObject/foxml:datastream[@ID='DS-COMPOSITE-MODEL'])">
+                    <xsl:if test="starts-with($PID,'')">
+                        <xsl:apply-templates mode="activeDemoFedoraObject"/>
                     </xsl:if>
+                </xsl:if>
                 <!--
                 </xsl:if>
                 -->
@@ -169,7 +169,7 @@
                 </field>
             </xsl:if>
         </xsl:for-each>
- 
+
 
         <!--***********************************************************end full text********************************************************************************-->
 
@@ -308,13 +308,14 @@
             <xsl:call-template name="mods"/>
             <!--only call this if the mods stream exists-->
         </xsl:for-each>
-        
+
         <!-- EAC-CPF for authorities -->
-        <xsl:apply-templates select="foxml:datastream[@ID='EAC-CPF']/foxml:datastreamVersion[last()]" mode="eac" />
-        
+        <xsl:apply-templates
+            select="foxml:datastream[@ID='EAC-CPF']/foxml:datastreamVersion[last()]" mode="eac"/>
+
         <!-- Transformation of pbcore for islandvoices.ca     -->
         <xsl:for-each
-            select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:pbcoreDescription[1]" >
+            select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:pbcoreDescription[1]">
             <xsl:if test="text() [normalize-space(.) ]">
                 <!--don't bother with empty space-->
                 <field>
@@ -325,7 +326,8 @@
                 </field>
             </xsl:if>
         </xsl:for-each>
-        <xsl:for-each select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:pbcoreDescription[2]">
+        <xsl:for-each
+            select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:pbcoreDescription[2]">
             <xsl:if test="text() [normalize-space(.) ]">
                 <!--don't bother with empty space-->
                 <field>
@@ -336,7 +338,8 @@
                 </field>
             </xsl:if>
         </xsl:for-each>
-        <xsl:for-each select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:pbcoreTitle">
+        <xsl:for-each
+            select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:pbcoreTitle">
             <xsl:if test="text() [normalize-space(.) ]">
                 <!--don't bother with empty space-->
                 <field>
@@ -347,7 +350,8 @@
                 </field>
             </xsl:if>
         </xsl:for-each>
-        <xsl:for-each select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:pbcoreSubject">
+        <xsl:for-each
+            select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:pbcoreSubject">
             <xsl:if test="text() [normalize-space(.) ]">
                 <!--don't bother with empty space-->
                 <field>
@@ -359,7 +363,8 @@
             </xsl:if>
         </xsl:for-each>
 
-        <xsl:for-each select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:pbcoreCoverage[pb:coverageType='Spatial']/pb:coverage">
+        <xsl:for-each
+            select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:pbcoreCoverage[pb:coverageType='Spatial']/pb:coverage">
             <xsl:if test="text() [normalize-space(.) ]">
                 <!--don't bother with empty space-->
                 <field>
@@ -370,7 +375,8 @@
                 </field>
             </xsl:if>
         </xsl:for-each>
-        <xsl:for-each select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:pbcoreCoverage[pb:coverageType='Temporal']/pb:coverage">
+        <xsl:for-each
+            select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:pbcoreCoverage[pb:coverageType='Temporal']/pb:coverage">
             <xsl:if test="text() [normalize-space(.) ]">
                 <!--don't bother with empty space-->
                 <field>
@@ -398,21 +404,25 @@
             <xsl:attribute name="name">
                 <xsl:value-of select="concat('pb.', 'duration')"/>
             </xsl:attribute>
-            <xsl:value-of select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:instantiationDuration"/>
+            <xsl:value-of
+                select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:instantiationDuration"
+            />
         </field>
 
         <field>
             <xsl:attribute name="name">
                 <xsl:value-of select="concat('pb.', 'date')"/>
             </xsl:attribute>
-            <xsl:value-of select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:instantiationDate"/>
+            <xsl:value-of
+                select="foxml:datastream[@ID='PBCORE']/foxml:datastreamVersion[last()]/foxml:xmlContent//pb:instantiationDate"
+            />
         </field>
-<!-- end of pbcore -->
+        <!-- end of pbcore -->
     </xsl:template>
     <xsl:template name="mods">
         <xsl:variable name="MODS_STREAM"
-            select="//foxml:datastream[@ID='MODS']/foxml:datastreamVersion[last()]" />
-            <!-- select="islandora-exts:getXMLDatastreamASNodeList($PID, $REPOSITORYNAME, 'MODS', $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS)" -->
+            select="//foxml:datastream[@ID='MODS']/foxml:datastreamVersion[last()]"/>
+        <!-- select="islandora-exts:getXMLDatastreamASNodeList($PID, $REPOSITORYNAME, 'MODS', $FEDORASOAP, $FEDORAUSER, $FEDORAPASS, $TRUSTSTOREPATH, $TRUSTSTOREPASS)" -->
 
         <!--***********************************************************MODS modified for maps**********************************************************************************-->
         <xsl:for-each select="$MODS_STREAM//mods:title">
@@ -814,108 +824,124 @@
     </xsl:template>
 
     <xsl:template match="foxml:datastreamVersion" mode="eac">
-        <xsl:apply-templates select="foxml:xmlContent/eac:eac-cpf" />
+        <xsl:apply-templates select="foxml:xmlContent/eac:eac-cpf"/>
     </xsl:template>
-    
+
     <xsl:template match="eac:eac-cpf">
-        <xsl:apply-templates select="eac:cpfDescription" />
+        <xsl:apply-templates select="eac:cpfDescription"/>
     </xsl:template>
     <xsl:template match="eac:cpfDescription">
-        <xsl:apply-templates select="eac:identity" />
-        <xsl:apply-templates select="eac:description" />
+        <xsl:apply-templates select="eac:identity"/>
+        <xsl:apply-templates select="eac:description"/>
     </xsl:template>
     <!-- identity section -->
-    <xsl:template match="eac:identity"> <!-- done -->
-        <xsl:apply-templates select="eac:entityType" /> <!-- done -->
-        <xsl:apply-templates select="eac:nameEntry" /> <!-- done -->
-        <xsl:apply-templates select="eac:entityId" /> <!-- done -->
+    <xsl:template match="eac:identity">
+        <!-- done -->
+        <xsl:apply-templates select="eac:entityType"/>
+        <!-- done -->
+        <xsl:apply-templates select="eac:nameEntry[not(@localType='primary')]"/>
+        <!-- done -->
+        <xsl:apply-templates select="eac:entityId"/>
+        <!-- done -->
     </xsl:template>
     <xsl:template match="eac:entityType">
         <field name="eac.entityType">
-            <xsl:value-of select="normalize-space()" />
+            <xsl:value-of select="normalize-space()"/>
         </field>
     </xsl:template>
     <xsl:template match="eac:nameEntry">
-        <xsl:apply-templates select="eac:part[@localType='firstName']" />
-        <xsl:apply-templates select="eac:part[@localType='middleName']" />
-        <xsl:apply-templates select="eac:part[@localType='lastName']" />
-    </xsl:template>
-    <xsl:template match="eac:part[@localType='firstName']">
-        <field name="eac.namePart_given">
-            <xsl:apply-templates />
+        <xsl:variable name="first" select="eac:part[@localType='firstName']"/>
+        <xsl:variable name="middle" select="eac:part[@localType='middleName']"/>
+        <field name="eac.namePart.given">
+            <xsl:choose>
+                <xsl:when test="$middle">
+                    <xsl:value-of select="concat($first,' ',$middle)"/>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="$first"/>
+                </xsl:otherwise>
+            </xsl:choose>
         </field>
-    </xsl:template>
-    <xsl:template match="eac:part[@localType='middleName']">
-        <field name="eac.namePart_middle">
-            <xsl:apply-templates />
-        </field>
+        <xsl:apply-templates select="eac:part[@localType='lastName']"/>
     </xsl:template>
     <xsl:template match="eac:part[@localType='lastName']">
-        <field name="eac.namePart_family">
-            <xsl:apply-templates />
+        <field name="eac.namePart.family">
+            <xsl:apply-templates/>
         </field>
     </xsl:template>
     <xsl:template match="eac:entityId">
         <field name="eac.entityId">
-            <xsl:apply-templates />
+            <xsl:apply-templates/>
         </field>
     </xsl:template>
     <!-- description section -->
     <xsl:template match="eac:description">
-        <xsl:apply-templates select="eac:existDates" /> <!-- done -->
-        <xsl:apply-templates select="eac:biogHist" /> <!-- done -->
+        <xsl:apply-templates select="eac:existDates"/>
+        <!-- done -->
+        <xsl:apply-templates select="eac:biogHist"/>
+        <!-- done -->
     </xsl:template>
     <xsl:template match="eac:existDates">
         <xsl:variable name="dates">
-            <xsl:apply-templates select="eac:dateRange" />
+            <xsl:apply-templates select="eac:dateRange"/>
         </xsl:variable>
         <xsl:if test="$dates != '-'">
             <field name="eac.existDates">
                 <xsl:value-of select="$dates"/>
             </field>
         </xsl:if>
+        <xsl:if test="eac:dateRange/eac:fromDate[normalize-space()]">
+            <field name="eac.existDates.fromDate">
+                <xsl:apply-templates select="eac:dateRange/eac:fromDate" />
+            </field>
+        </xsl:if>
+        <xsl:if test="eac:dateRange/eac:toDate[normalize-space()]">
+            <field name="eac.existDates.toDate">
+                <xsl:apply-templates select="eac:dateRange/eac:toDate" />
+            </field>
+        </xsl:if>
     </xsl:template>
     <xsl:template match="eac:dateRange">
-        <xsl:variable name="from" select="eac:fromDate" />
-        <xsl:variable name="to" select="eac:toDate" />
+        <xsl:variable name="from" select="eac:fromDate"/>
+        <xsl:variable name="to" select="eac:toDate"/>
         <xsl:value-of select="concat($from,'-',$to)"/>
     </xsl:template>
-    <xsl:template match="eac:biogHist"> <!-- done -->
-        <xsl:apply-templates select="eac:chronList" />
-        <xsl:apply-templates select="eac:p" />
+    <xsl:template match="eac:biogHist">
+        <!-- done -->
+        <xsl:apply-templates select="eac:chronList"/>
+        <xsl:apply-templates select="eac:p"/>
     </xsl:template>
     <xsl:template match="eac:chronList">
-        <xsl:apply-templates select="eac:chronItem[@localType='classYear']" />
-        <xsl:apply-templates select="eac:chronItem[@localType='position']" />
+        <xsl:apply-templates select="eac:chronItem[@localType='classYear']"/>
+        <xsl:apply-templates select="eac:chronItem[@localType='position']"/>
     </xsl:template>
     <xsl:template match="eac:chronItem[@localType='classYear']">
         <xsl:if test="number(eac:date)">
             <field name="eac.classYear">
-                <xsl:apply-templates select="eac:date" />
-            </field>    
+                <xsl:apply-templates select="eac:date"/>
+            </field>
         </xsl:if>
     </xsl:template>
     <xsl:template match="eac:chronItem[@localType='position']">
-        <xsl:variable name="description" select="eac:event" />
+        <xsl:variable name="description" select="eac:event"/>
         <xsl:variable name="dates">
-            <xsl:apply-templates select="eac:dateRange" />
+            <xsl:apply-templates select="eac:dateRange"/>
         </xsl:variable>
         <field name="eac.position">
             <xsl:choose>
                 <xsl:when test="$dates='-'">
-                    <xsl:value-of select="$description" />    
+                    <xsl:value-of select="$description"/>
                 </xsl:when>
                 <xsl:otherwise>
-                    <xsl:value-of select="concat($description,', ',$dates)" />
+                    <xsl:value-of select="concat($description,', ',$dates)"/>
                 </xsl:otherwise>
             </xsl:choose>
         </field>
     </xsl:template>
     <xsl:template match="eac:p">
         <field name="eac.biography">
-            <xsl:apply-templates /> 
+            <xsl:apply-templates/>
         </field>
     </xsl:template>
 
 </xsl:stylesheet>
-
