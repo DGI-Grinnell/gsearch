@@ -866,9 +866,14 @@
         <xsl:apply-templates select="eac:biogHist" /> <!-- done -->
     </xsl:template>
     <xsl:template match="eac:existDates">
-        <field name="eac.existDates">
+        <xsl:variable name="dates">
             <xsl:apply-templates select="eac:dateRange" />
-        </field>
+        </xsl:variable>
+        <xsl:if test="$dates != '-'">
+            <field name="eac.existDates">
+                <xsl:value-of select="$dates"/>
+            </field>
+        </xsl:if>
     </xsl:template>
     <xsl:template match="eac:dateRange">
         <xsl:variable name="from" select="eac:fromDate" />
@@ -892,9 +897,16 @@
         <xsl:variable name="description" select="eac:event" />
         <xsl:variable name="dates">
             <xsl:apply-templates select="eac:dateRange" />
-        </xsl:variable>   
+        </xsl:variable>
         <field name="eac.position">
-            <xsl:value-of select="concat($description,', ',$dates)" />
+            <xsl:choose>
+                <xsl:when test="$dates='-'">
+                    <xsl:value-of select="$description" />    
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:value-of select="concat($description,', ',$dates)" />
+                </xsl:otherwise>
+            </xsl:choose>
         </field>
     </xsl:template>
     <xsl:template match="eac:p">
