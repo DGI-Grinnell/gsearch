@@ -901,6 +901,12 @@
             </field>
           </xsl:if>
         </xsl:for-each>
+        
+        <xsl:for-each select="$MODS_STREAM//mods:name[@type='personal']/mods:namePart[not(@type)]">
+            <field>
+                <xsl:value-of select="normalize-space(text())"/>
+            </field>
+        </xsl:for-each>
 
         <!--  added for newspaper collection  -->
         <xsl:if test="starts-with($PID, 'guardian')">
